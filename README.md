@@ -1,7 +1,8 @@
 # Notion 기반 학회 대시보드 프로젝트
 
-이 프로젝트는 **Notion Database**를 활용하여 학회 정보를 시각화 및 관리할 수 있는 **대시보드 시스템**입니다.  
-Frontend는 React 기반, Backend는 Flask 기반으로 구성되어 있으며, Docker Compose 및 Argo CD를 통한 배포도 지원합니다.
+이 프로젝트는 **Notion Database**를 활용하여 학회 정보를 시각화 및 관리를 위한  **대시보드 시스템**입니다.  
+Frontend는 React 기반, Backend는 Flask 기반으로 구성되어 있으며, 컨테이너 환경에서 Build & Run을 지원하기 위한 
+Docker Compose 및 Argo CD를 통한 배포도 지원합니다.
 
 ---
 
@@ -36,7 +37,7 @@ Frontend는 React 기반, Backend는 Flask 기반으로 구성되어 있으며, 
 	•	설명: Kubernetes 환경에서 Argo CD를 통해 앱을 배포할 수 있도록 구성된 manifest 파일들
 	•	기능: CI/CD 자동화, GitOps 기반 운영 지원
 
-⸻
+---
 
 
 ## 📝 주요 기술 스택
@@ -61,60 +62,39 @@ NOTION_TOKEN=your_notion_integration_token
 NOTION_DATABASE_ID=your_database_id
 
 
+---
 
-⸻
-
-2. Docker Compose로 실행 (로컬 테스트용)
+### 2. Docker Compose로 실행 (로컬 테스트용)
 
 docker-compose up --build
 
 	•	React 프론트엔드: localhost:3000
 	•	Flask 백엔드: localhost:3020
 
-⸻
+---
 
-3. Argo CD를 이용한 Kubernetes 배포
+### 3. Argo CD를 이용한 Kubernetes 배포
 
 argo-manifest/ 디렉토리에 있는 YAML들을 활용해 배포합니다.
+
+디렉토리에는 Deployment에 대한 Manifest와 Service에 대한 Manifest가 있습니다.
 
 kubectl apply -f argo-manifest/
 
 Argo CD를 통해 GitOps 방식으로 지속적 배포가 가능합니다.
 
-⸻
+---
 
-📌 주요 기능
+### 📌 주요 기능
 	•	📄 Notion DB 연동: 학회 정보를 Notion Database로부터 직접 불러오고 수정 가능
 	•	📆 일정 시각화: D-Day 뱃지, 날짜 Range 선택 등 시각적 인터페이스 제공
 	•	✅ 등록 및 수정 기능: 학회 카드 추가 및 수정 지원
 	•	🔗 URL 바로가기: 학회 관련 사이트 링크 클릭 시 새 탭에서 열기
 	•	🚀 Kubernetes 배포 최적화: ArgoCD 기반 CI/CD 파이프라인 가능
 
-⸻
+---
 
-💬 예시 스크린샷
-
-학회 카드 목록	학회 정보 추가	학회 수정 모달
-		
-
-	(📸 이미지는 /screenshots 폴더에 위치해야 합니다)
-
-⸻
-
-📂 디렉토리 구성 요약
-
-.
-├── argo-manifest/               # Argo CD를 위한 Kubernetes manifest
-├── docker-compose.yaml          # 로컬 개발용 docker-compose 설정
-├── notion-dashboard/            # React 기반 프론트엔드
-├── notion-dashboard-backend/    # Flask 기반 백엔드
-└── README.md                    # 현재 문서
-
-
-
-⸻
-
-👨‍💻 개발자 가이드
+### 👨‍💻 가이드
 
 Frontend
 
