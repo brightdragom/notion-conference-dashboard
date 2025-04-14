@@ -1,0 +1,5 @@
+create-secrets.sh
+./notion-dashboard/.env
+./notion-dashboard-backend/.env
+
+
