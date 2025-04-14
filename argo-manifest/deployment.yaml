@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: conference-dashboard-deployment
+  namespace: conference-dashboard
+  labels:
+    app: conference-dashboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: conference-dashboard
+  template:
+    metadata:
+      labels:
+        app: conference-dashboard
+    spec:
+      containers:
+      - name: conference-dashboard
+        image: gwangyong/notion-dashboard-frontend:1.3
+        ports:
+        - containerPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notion-dashboard-backend
+  namespace: conference-dashboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notion-dashboard-backend
+  template:
+    metadata:
+      labels:
+        app: notion-dashboard-backend
+    spec:
+      containers:
+        - name: flask
+          image: gwangyong/notion-dashboard-backend:1.0
+          ports:
+            - containerPort: 5000
+          env:
+            - name: NOTION_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: notion-secret
+                  key: NOTION_TOKEN
+            - name: NOTION_DATABASE_ID
+              valueFrom:
+                secretKeyRef:
+                  name: notion-secret
+                  key: NOTION_DATABASE_ID
