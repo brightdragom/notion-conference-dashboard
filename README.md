@@ -6,10 +6,10 @@ Frontend는 React 기반, Backend는 Flask 기반으로 구성되어 있으며, 
 ---
 
 ## 📁 디렉터리 구조
-├── argo-manifest/               # Argo CD 기반 배포를 위한 Kubernetes manifest
-├── docker-compose.yaml          # Frontend/Backend를 위한 Docker Compose 파일
-├── notion-dashboard/            # React 기반 Frontend
-└── notion-dashboard-backend/    # Flask 기반 Backend (Notion API 연동)
+├── argo-manifest/               # Argo CD 기반 배포를 위한 Kubernetes manifest<br/>
+├── docker-compose.yaml          # Frontend/Backend를 위한 Docker Compose 파일<br/>
+├── notion-dashboard/            # React 기반 Frontend<br/>
+└── notion-dashboard-backend/    # Flask 기반 Backend (Notion API 연동)<br/>
 
 ---
 
