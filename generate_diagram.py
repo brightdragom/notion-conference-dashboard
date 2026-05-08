@@ -25,27 +25,26 @@ prompt = f"""
 {tree_output}
 
 [제약 사항]
-1. 응답은 반드시 D2 문법 코드만 출력하세요. (마크다운 코드 블록 ```d2 등은 절대 사용하지 마세요).
+1. 응답은 반드시 D2 문법 코드만 출력하세요. (마크다운 코드 블록 제외).
 2. 시스템 흐름 방향은 `direction: right`를 최상단에 명시하세요.
 3. 폴더 구조를 보고 사용되었을 것으로 추정되는 서비스(예: 백엔드, 프론트엔드, DB 등)를 노드로 구성하고 연결해주세요.
 """
 
 # 4. Gemini API 호출
 print("Gemini API를 호출하여 아키텍처를 분석 중입니다...")
-# 긴 컨텍스트와 논리 분석에 유리한 제미나이 모델 사용
 model = genai.GenerativeModel('gemini-1.5-pro') 
 response = model.generate_content(prompt)
 
 d2_script = response.text.strip()
 
-# 혹시라도 AI가 마크다운(
-```d2 ... ```) 형태로 답변을 줬을 경우를 대비한 정제 로직
+# 5. AI 응답 정제 (마크다운 코드 블록이 포함된 경우 제거)
 if d2_script.startswith('```'):
     lines = d2_script.split('\n')
-    d2_script = '\n'.join(lines[1:-1]) # 첫 줄(
-```d2)과 마지막 줄(```) 제거
+    # 첫 줄과 마지막 줄을 제외하고 다시 합침
+    if len(lines) > 2:
+        d2_script = '\n'.join(lines[1:-1])
 
-# 5. D2 스크립트 파일 저장
+# 6. D2 스크립트 파일 저장
 with open('architecture.d2', 'w', encoding='utf-8') as f:
     f.write(d2_script)
 
