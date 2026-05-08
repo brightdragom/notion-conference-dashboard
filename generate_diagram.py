@@ -1,6 +1,6 @@
 import os
 import subprocess
-from google import genai  
+from google import genai
 
 # 1. 프로젝트 폴더 구조 추출 (디렉토리 트리)
 try:
@@ -30,12 +30,27 @@ prompt = f"""
 3. 폴더 구조를 보고 사용되었을 것으로 추정되는 서비스(예: 백엔드, 프론트엔드, DB 등)를 노드로 구성하고 연결해주세요.
 """
 
-# 5. Gemini API 호출 (신규 SDK 문법 적용)
-print("Gemini API(신규 SDK)를 호출하여 아키텍처를 분석 중입니다...")
-response = client.models.generate_content(
-    model='gemini-1.5-pro-latest', # 모델명 수정됨
-    contents=prompt
-)
+# 5. Gemini API 호출
+print("Gemini API를 호출하여 아키텍처를 분석 중입니다...")
+
+# 가장 최신이며 안정적으로 접근 가능한 모델로 변경
+target_model = 'gemini-2.0-flash' 
+
+try:
+    response = client.models.generate_content(
+        model=target_model,
+        contents=prompt
+    )
+except Exception as e:
+    print(f"\n❌ [{target_model}] 모델 호출 실패. 사용 가능한 모델 목록을 확인합니다...")
+    try:
+        # 에러 발생 시 현재 API 키로 사용 가능한 모델 목록을 터미널에 출력합니다.
+        for m in client.models.list():
+            if 'generateContent' in m.supported_actions:
+                print(f"사용 가능 모델: {m.name}")
+    except Exception as list_e:
+        print("모델 목록을 불러오는데도 실패했습니다.")
+    raise e # 원래의 에러를 발생시켜 워크플로우를 중단시킵니다.
 
 d2_script = response.text.strip()
 
