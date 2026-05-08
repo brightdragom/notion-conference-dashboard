@@ -24,7 +24,7 @@ jobs:
       - name: Install dependencies (Tree, API Clients)
         run: |
           sudo apt-get install tree
-          pip install openai anthropic google-generativeai
+          pip install google-genai
 
       - name: Install D2 CLI
         run: curl -fsSL https://d2lang.com/install.sh | sh -s --
