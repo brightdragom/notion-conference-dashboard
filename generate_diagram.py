@@ -1,6 +1,6 @@
 import os
 import subprocess
-from google import genai  # 구형 google.generativeai 대신 신규 패키지 사용
+from google import genai  
 
 # 1. 프로젝트 폴더 구조 추출 (디렉토리 트리)
 try:
@@ -33,7 +33,7 @@ prompt = f"""
 # 5. Gemini API 호출 (신규 SDK 문법 적용)
 print("Gemini API(신규 SDK)를 호출하여 아키텍처를 분석 중입니다...")
 response = client.models.generate_content(
-    model='gemini-1.5-pro',
+    model='gemini-1.5-pro-latest', # 모델명 수정됨
     contents=prompt
 )
 
