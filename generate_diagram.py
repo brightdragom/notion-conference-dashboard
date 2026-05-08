@@ -32,7 +32,8 @@ prompt = f"""
 
 # 4. Gemini API 호출
 print("Gemini API를 호출하여 아키텍처를 분석 중입니다...")
-model = genai.GenerativeModel('gemini-1.5-pro') 
+# 에러 수정됨: 모델 이름을 'gemini-1.5-pro-latest'로 변경
+model = genai.GenerativeModel('gemini-1.5-pro-latest') 
 response = model.generate_content(prompt)
 
 d2_script = response.text.strip()
