@@ -1,0 +1,46 @@
+name: Auto Generate D2 Architecture Diagram
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**/*.py'
+      - '**/*.go'
+      - 'components/**/*.yaml' # 인프라 설정 변경 시 트리거
+
+jobs:
+  generate-diagram:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies (Tree, API Clients)
+        run: |
+          sudo apt-get install tree
+          pip install openai anthropic google-generativeai
+
+      - name: Install D2 CLI
+        run: curl -fsSL https://d2lang.com/install.sh | sh -s --
+
+      - name: Run AI Analysis & Generate D2 Script
+        env:
+          AI_API_KEY: ${{ secrets.AI_API_KEY }}
+        run: python generate_diagram.py
+
+      - name: Render D2 to SVG
+        run: d2 architecture.d2 architecture.svg
+
+      - name: Commit and Push Generated Diagram
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add architecture.d2 architecture.svg
+          git commit -m "docs: Auto-update architecture diagram [skip ci]" || echo "No changes to commit"
+          git push
