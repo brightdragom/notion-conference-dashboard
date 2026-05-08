@@ -1,23 +1,23 @@
 import os
 import subprocess
-import google.generativeai as genai
+from google import genai  # 구형 google.generativeai 대신 신규 패키지 사용
 
 # 1. 프로젝트 폴더 구조 추출 (디렉토리 트리)
 try:
-    # GitHub Actions 환경에서 tree 명령어를 실행합니다.
     tree_output = subprocess.check_output(['tree', '-L', '3', '-I', 'venv|node_modules|.git|.github']).decode('utf-8')
 except Exception as e:
     print(f"폴더 구조를 읽는 중 에러 발생: {e}")
     tree_output = "폴더 구조를 불러올 수 없습니다."
 
-# 2. Gemini API 설정 (GitHub 환경 변수에서 토큰을 가져옵니다)
+# 2. API 키 확인 (GitHub Secrets)
 api_key = os.environ.get("AI_API_KEY")
 if not api_key:
     raise ValueError("AI_API_KEY 환경 변수가 설정되지 않았습니다. GitHub Secrets를 확인해주세요.")
 
-genai.configure(api_key=api_key)
+# 3. 신규 GenAI 클라이언트 초기화
+client = genai.Client(api_key=api_key)
 
-# 3. AI 프롬프트 구성
+# 4. AI 프롬프트 구성
 prompt = f"""
 당신은 마이크로서비스 아키텍트입니다. 다음 프로젝트 폴더 구조를 분석하여, 시스템 아키텍처를 시각화하는 D2(Declarative Diagramming) 스크립트를 작성하세요.
 
@@ -30,22 +30,22 @@ prompt = f"""
 3. 폴더 구조를 보고 사용되었을 것으로 추정되는 서비스(예: 백엔드, 프론트엔드, DB 등)를 노드로 구성하고 연결해주세요.
 """
 
-# 4. Gemini API 호출
-print("Gemini API를 호출하여 아키텍처를 분석 중입니다...")
-# 에러 수정됨: 모델 이름을 'gemini-1.5-pro-latest'로 변경
-model = genai.GenerativeModel('gemini-1.5-pro-latest') 
-response = model.generate_content(prompt)
+# 5. Gemini API 호출 (신규 SDK 문법 적용)
+print("Gemini API(신규 SDK)를 호출하여 아키텍처를 분석 중입니다...")
+response = client.models.generate_content(
+    model='gemini-1.5-pro',
+    contents=prompt
+)
 
 d2_script = response.text.strip()
 
-# 5. AI 응답 정제 (마크다운 코드 블록이 포함된 경우 제거)
+# 6. AI 응답 정제 (마크다운 코드 블록이 포함된 경우 제거)
 if d2_script.startswith('```'):
     lines = d2_script.split('\n')
-    # 첫 줄과 마지막 줄을 제외하고 다시 합침
     if len(lines) > 2:
         d2_script = '\n'.join(lines[1:-1])
 
-# 6. D2 스크립트 파일 저장
+# 7. D2 스크립트 파일 저장
 with open('architecture.d2', 'w', encoding='utf-8') as f:
     f.write(d2_script)
 
